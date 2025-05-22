@@ -12,9 +12,28 @@ title: "Introduction to R"
 
 ### Programming vs point-and-click
 
+R is a programming language as well as software that runs R code.
+
+RStudio is a popular software interface that can make it easier to write R scripts and interact with R. 
+
+Programming languages offer a powerful way to explore and analyse research data. Advantages over point-and-click software include:
+
+- Analysing your data with a series of written commands provides a record of exactly what you've done, aiding transparency and research integrity.
+- When these commands are saved into a script file, they can easily be rerun on similar data, saving you valuable time and opening up new possibilities.
+- R produces high-quality graphics, has a package for almost any type of analysis you'll want to perform, and has a large and welcoming user community for help and guidance.
+
 ### Navigating RStudio
 
+RStudio has 4 panes, clockwise from top left:
+
+- Source: Displays scripts, data, and other kinds of files.
+- Environment: Displays the objects in your current R session.
+- Files/Plots/Help/Viewer: Displays files on your computer, plots, and help documentation.
+- Console: Where you interact directly with R.
+
 ### Projects
+
+It's best to keep related files and analyses together in project folders. You can then set up an RStudio project you're working on, which provides some useful features when working with R.
 
 ### Console vs Script
 
@@ -49,3 +68,15 @@ title: "Introduction to R"
 ### Manually plotting each
 
 ### Writing a function
+
+## Resources
+
+[Data Analysis and Visualization in R for Ecologists](https://datacarpentry.github.io/R-ecology-lesson/)
+
+[R for Data Science](https://r4ds.hadley.nz/)
+
+[Tidyverse documentation](https://www.tidyverse.org/packages/)
+
+[Posit Forums](https://forum.posit.co/)
+
+[Stack Exchange](https://stats.stackexchange.com/questions/tagged/r)
