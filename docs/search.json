@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html#r-rstudio",
+    "href": "index.html#r-rstudio",
+    "title": "Introduction to R",
+    "section": "1. R & RStudio",
+    "text": "1. R & RStudio\n\nProgramming vs point-and-click\n\n\nNavigating RStudio\n\n\nProjects\n\n\nConsole vs Script"
+  },
+  {
+    "objectID": "index.html#plotting-with-ggplot2",
+    "href": "index.html#plotting-with-ggplot2",
+    "title": "Introduction to R",
+    "section": "2. Plotting with ggplot2",
+    "text": "2. Plotting with ggplot2\n\nggplot2 template syntax\n\n\nPenguins - scatterplot\n\n\nPenguins - barplot\n\n\nPenguins - boxplot"
+  },
+  {
+    "objectID": "index.html#programming-basics",
+    "href": "index.html#programming-basics",
+    "title": "Introduction to R",
+    "section": "3. Programming basics",
+    "text": "3. Programming basics\n\nObjects and assignment\n\n\nFunctions and arguments\n\n\nVectors and dataframes\n\n\nSubsetting with filter + select\n\n\nPiping\n\n\nGrouping"
+  },
+  {
+    "objectID": "index.html#putting-it-all-together",
+    "href": "index.html#putting-it-all-together",
+    "title": "Introduction to R",
+    "section": "4. Putting it all together",
+    "text": "4. Putting it all together\n\nProblem: Multiple separate plots\n\n\nManually plotting each\n\n\nWriting a function"
+  }
+]
