@@ -16,7 +16,7 @@ R is a programming language as well as software that runs R code.
 
 RStudio is a popular software interface that can make it easier to write R scripts and interact with R. 
 
-Programming languages offer a powerful way to explore and analyse research data. Advantages over point-and-click software include:
+Programming languages have many benefits over point and click software:
 
 - Analysing your data with a series of written commands provides a record of exactly what you've done, aiding transparency and research integrity.
 - When these commands are saved into a script file, they can easily be rerun on similar data, saving you valuable time and opening up new possibilities.
@@ -35,31 +35,404 @@ RStudio has 4 panes, clockwise from top left:
 
 It's best to keep related files and analyses together in project folders. You can then set up an RStudio project you're working on, which provides some useful features when working with R.
 
+<Portable project stuff>
+
 ### Console vs Script
+
+You can run commands directly in the R console, or you can write them into an R script.
+
+Console:
+
+- Where code is run/executed
+- Type commands at the prompt (`>` symbol) 
+- Press <kbd>Enter</kbd> to execute the command and print the result
+- Can't access what you did after closing RStudio
+
+Script:
+
+- A list of R commands in a plain text file with a `.R` extension
+- `File → New File → R Script` or `+` button in the top left corner of RStudio
+- `Cmd+Enter` (Mac) or `Ctrl+Enter` (Windows) will run the line of code that your cursor is on, or which is highlighted 
+- You can leave comments with `#` 
+- Commands are saved and can be rerun later
 
 ## 2. Plotting with ggplot2
 
-### ggplot2 template syntax
+Load the packages we need with `library()`. We'll talk more about functions later.
 
-### Penguins - scatterplot
+```{r message=FALSE}
+library(ggplot2)
+library(ratdat)
+```
 
-### Penguins - barplot
+**`ggplot`** is a popular plotting package. Plots made with this packages are built step by step by adding new layers.
 
-### Penguins - boxplot
+The `ratdat` package contains data from the [Portal Project](https://github.com/weecology/PortalData), a long-term dataset from Portal, Arizona, in the Chihuahuan desert. 
+
+We will be using a dataset called `complete_old`.
+
+```{r data-help}
+?complete_old
+```
+
+To build a plot we can start with a basic template:
+
+`ggplot(data = <DATA>, mapping = aes(<MAPPINGS>)) + <GEOM_FUNCTION>()`
+
+We need to specify everything within `<>`.
+
+```{r bare-plot}
+ggplot(data = complete_old)
+```
+
+The plot is blank because we haven't told `ggplot()` which variables in the data we want to plot. 
+
+```{r plot-with-axes}
+ggplot(data = complete_old, mapping = aes(x = weight, y = hindfoot_length))
+```
+
+We haven't specified how we want the data to be displayed. We do this using `geom_` functions, which specify the type of `geom`etry we want, such as points, lines, or bars. We can add a `geom_point()` layer to our plot by using the `+` sign.
+
+```{r scatter-plot}
+ggplot(data = complete_old, mapping = aes(x = weight, y = hindfoot_length)) +
+  geom_point()
+```
+
+When we have overlapping points we can adjust the transparency of the points using the `alpha` argument, which takes a value between 0 and 1:
+
+```{r change-alpha, warning=FALSE}
+ggplot(data = complete_old, mapping = aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.2)
+```
+
+Change the color of points:
+
+```{r change-color, warning=FALSE}
+ggplot(data = complete_old, mapping = aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.2, color = "blue")
+```
+
+Change the colour of points to take on the value of another variable:
+
+```{r color-plot-type, warning=FALSE}
+ggplot(data = complete_old, mapping = aes(x = weight, y = hindfoot_length, color = plot_type)) +
+  geom_point(alpha = 0.2)
+```
+
+Make a boxplot with `plot_type` on the x axis:
+
+```{r boxplot}
+ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length)) +
+  geom_boxplot()
+```
+
+Change the color of plots using `fill` and remove legend:
+
+```{r boxplot-fill, warning=FALSE}
+ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
+  geom_boxplot(show.legend = FALSE)
+```
+
+Change theme by specifying a built-in theme called `theme_bw()`:
+
+```{r boxplot-fill, warning=FALSE}
+ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
+  geom_boxplot(show.legend = FALSE) +
+  theme_bw()
+```
+
+Give the plot a title and change the x and y labels:
+
+```{r boxplot-fill, warning=FALSE}
+ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
+  geom_boxplot(show.legend = FALSE) +
+  theme_bw() +
+  labs(title = "Rodent Size By Plot Type",
+       x = "Plot Type",
+       y = "Hindfoot Length (mm)")
+```
+
+Centre the plot title:
+
+```{r boxplot-fill, warning=FALSE}
+ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
+  geom_boxplot(show.legend = FALSE) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title = "Rodent Size By Plot Type",
+       x = "Plot Type",
+       y = "Hindfoot Length (mm)")
+```
+
+Save the plot by assigning it to an object called `final_plot` and using `ggsave()`:
+
+```{r boxplot-fill, warning=FALSE}
+final_plot <- ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
+  geom_boxplot(show.legend = FALSE) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title = "Rodent Size By Plot Type",
+       x = "Plot Type",
+       y = "Hindfoot Length (mm)")
+
+ggsave(plot = final_plot, filename = "plots/rodent-size-plot-type.png",
+       width = 8, height = 6)
+```
+
+By default, ggplot dimensions are specified in inches, and images are 300 DPI. So this image will have a resolution of 2400 pixels wide by 1800 pixels high.
 
 ## 3. Programming basics
 
+### Vectors
+
+There are 4 main types of vectors:
+
+1. `"character"` for text. Each entry is wrapped in quotes. In other programming languages, this type of data may be referred to as "strings".
+
+2. `"integer"` for integers. All the numeric values in `complete_old` are integers. You may sometimes see integers represented like `2L` or `20L`. The `L` indicates to R that it is an integer, instead of the next data type, `"numeric"`.
+
+3. `"numeric"`, aka `"double"`, vectors can contain numbers including decimals. Other languages may refer to these as "float" or "floating point" numbers.
+
+4. `"logical"` for `TRUE` and `FALSE`, which can also be represented as `T` and `F`. In other contexts, these may be referred to as "Boolean" data. Note they are not wrapped in quotes.
+
+Vectors can only be of a **single type**. 
+
+To create a vector from scratch, we can use the `c()` function, putting values inside, separated by commas. Vectors are the basic building blocks of all data in R.
+
+### Data.frames
+
+Data.frames are made up of vectors; each column in a data.frame is a vector. 
+
+We can see more information about `complete_old` by using the structure function:
+
+```{r}
+str(complete_old)
+```
+
+The `$` in front of each variable is an operator that allows us to select individual columns from a data.frame.
+
+```{r dollar-subsetting}
+complete_old$year
+```
+
+We get back all values in the `year` column.
+
 ### Objects and assignment
+
+We can assign a value to an object by naming the object and using the assignment operator (`<-`):
+
+```{r }
+x <- 5
+```
+
+We can also assign objects to other objects:
+
+```{r }
+y <- x
+```
+
+If we now overwrite the value of `x`, the value of `y` will not change:
+
+```{r }
+x <- 10
+y
+```
 
 ### Functions and arguments
 
-### Vectors and dataframes
+Functions take arguments, and some arguments are required. Optional arguments are called options. 
 
-### Subsetting with filter + select
+The `round()` function rounds a number. Lets take a look at how it works:
+
+```{r }
+?round()
+```
+
+It requires a number to round (`x`), and optionally the number of digits to round to (`digits`):
+
+```{r }
+round(x = 3.14159, digits = 1)
+```
+If we don't provide `digits` it will default to 0:
+
+```{r }
+round(x = 3.14159)
+```
+
+If we provide arguments in the order expected we don't have to name them (but it's good to when starting out):
+
+```{r }
+round(3.14159, 1)
+```
+
+### Reading in data
+
+Up until now, we've been working with the `complete_old` dataframe contained in the `ratdat` package. However, you'll typically want to access data stored somewhere on your computer as files. Our project contains a data file in the `/data` directory, and we're going to read it in now. 
+
+First, let's load the Tidyverse package. This contains many other packages, including some we've used already like ggplot2, but it's usually more convenient to load all of them at once.
+
+```{r load-tidyverse-package, message=FALSE}
+library(tidyverse)
+```
+
+**`tidyverse` vs. base R**
+
+In R, there are often many ways to get a job done. The phrase **base R** is used to refer to approaches that utilize functions contained in R's default packages. There are some key base R approaches we will not be teaching. These include square bracket subsetting and base plotting. You may come across code written by other people that looks like `surveys[1:10, 2]` or `plot(surveys$weight, surveys$hindfoot_length)`, which are base R commands. 
+
+The `tidyverse` packages share a similar syntax and philosophy, making them consistent and producing highly readable code. They are also very flexible and powerful, and tend to have very clear documentation written with novice users in mind. 
+
+Because we're using an RStudio project, we can specify the relative file path when reading in our data (relative to the project folder):
+
+```{r read-csv}
+surveys <- read_csv("data/surveys_complete_77_89.csv")
+```
+
+### Subsetting 
+
+Two of the most commonly used functions for manipulating data are `select()`, which selects certain columns of a data.frame, and `filter()`, which filters out rows according to certain criteria.
+
+The first argument for `select()` is the name of the data.frame, and the rest of the arguments are *unquoted* names of the columns you want:
+
+```{r select}
+select(surveys, plot_id, species_id, hindfoot_length)
+```
+
+The columns are arranged in the order we specified inside `select()`.
+
+Put a `-` in front of the column you want to exclude:
+
+```{r select-minus}
+select(surveys, -record_id, -year)
+```
+
+To select the 3rd, 4th, 5th, and 10th columns, we could run the following code:
+
+```{r select-vector}
+select(surveys, c(3:5, 10))
+```
+
+The `filter()` function is used to select rows that meet certain criteria. To get all the rows where the value of `year` is equal to 1985:
+
+```{r filter}
+filter(surveys, year == 1985)
+```
+
+The `==` sign means "is equal to". There are several other operators we can use: >, >=, <, <=, and != (not equal to). Another useful operator is `%in%`, which asks if the value on the lefthand side is found anywhere in the vector on the righthand side. For example, to get rows with specific `species_id` values, we could run:
+
+```{r filter-in}
+filter(surveys, species_id %in% c("RM", "DO"))
+```
+
+We can also use multiple conditions:
+
+```{r filter-multiple}
+filter(surveys, year <= 1988 & !is.na(hindfoot_length))
+```
+
+We get rows with a year less than or equal to 1988 and whose hindfoot length values are not `NA`. The `!` before the `is.na()` function means "not".
 
 ### Piping
 
+What happens if we want to both `select()` and `filter()` our data? 
+
+An elegant solution to this problem is an operator called the **pipe** `%>%`. You can insert it by using the keyboard shortcut `Shift+Cmd+M` (Mac) or `Shift+Ctrl+M` (Windows). 
+
+```{r filter-select-pipe}
+surveys %>% 
+  select(-day) %>% 
+  filter(month >= 7)
+```
+
+The pipe takes the object on the lefthand side and inserts it as the first argument of the function on the righthand side. By putting each of our functions onto a new line, we can build a nice, readable **pipeline**. 
+
+We can assign this final product to an object:
+
+```{r pipeline-assignment}
+surveys_sub <- surveys %>% 
+  select(-day) %>% 
+  filter(month >= 7)
+```
+
+Build a pipeline step by step prior to assignment. Add functions to the pipeline as you go, with the results printing in the console for you to view. Once you're satisfied with your final result, go back and add the assignment arrow statement at the start. This approach is very interactive, allowing you to see the results of each step as you build the pipeline, and produces nicely readable code.
+
+Another common task is creating a new column based on values in existing columns. For example, to add a new column that has the weight in kilograms instead of grams:
+
+```{r mutate}
+surveys %>% 
+  mutate(weight_kg = weight / 1000)
+```
+
+You can create multiple columns in one `mutate()` call, and they will get created in the order you write them. This means you can even reference the first new column in the second new column:
+
+```{r mutate-multiple}
+surveys %>% 
+  mutate(weight_kg = weight / 1000,
+         weight_lbs = weight_kg * 2.2)
+```
+
 ### Grouping
+
+Many data analysis tasks can be achieved using the split-apply-combine approach: you split the data into groups, apply some analysis to each group, and combine the results in some way. 
+
+`group_by()` takes a data.frame and the name of one or more columns with categorical values that define the groups. `summarize()` then collapses each group into a one-row summary of the group, giving you back a data.frame with one row per group. The syntax for `summarize()` is similar to `mutate()`, where you define new columns based on values of other columns. 
+
+To calculate the mean weight of all our animals by sex:
+
+```{r group-by-summarize}
+surveys %>% 
+  group_by(sex) %>% 
+  summarize(mean_weight = mean(weight, na.rm = T))
+```
+
+We can define multiple columns in one `summarize()` call. The function `n()` will count the number of rows in each group.
+
+```{r summarize-multiple}
+surveys %>% 
+  group_by(sex) %>% 
+  summarize(mean_weight = mean(weight, na.rm = T),
+            n = n())
+```
+
+You will often want to create groups based on multiple columns. For example, we might be interested in the mean weight of every species + sex combination.
+
+```{r group-by-multiple}
+surveys %>% 
+  group_by(species_id, sex) %>% 
+  summarize(mean_weight = mean(weight, na.rm = T),
+            n = n())
+```
+
+Our resulting data.frame is much larger, since we have a greater number of groups. We also see a strange value showing up in our `mean_weight` column: `NaN`. This stands for "Not a Number", and it often results from trying to do an operation a vector with zero entries. If a particular group (like the AB species ID + `NA` sex group) has **only** `NA` values for weight, then the `na.rm = T` argument in `mean()` will remove **all** the values prior to calculating the mean. The result will be a value of `NaN`. Since we are not particularly interested in these values, let's add a step to our pipeline to remove rows where weight is `NA` **before** doing any other steps. This means that any groups with only `NA` values will disappear from our data.frame before we formally create the groups with `group_by()`.
+
+```{r filter-group-by}
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  group_by(species_id, sex) %>% 
+  summarize(mean_weight = mean(weight),
+            n = n())
+```
+
+It's often useful to take a look at the results in some order, like the lowest mean weight to highest. We can use the `arrange()` function for that:
+
+```{r arrange}
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  group_by(species_id, sex) %>% 
+  summarize(mean_weight = mean(weight),
+            n = n()) %>% 
+  arrange(mean_weight)
+```
+
+If we want to reverse the order, we can wrap the column name in `desc()`:
+
+```{r arrange-desc}
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  group_by(species_id, sex) %>% 
+  summarize(mean_weight = mean(weight),
+            n = n()) %>% 
+  arrange(desc(mean_weight))
+```
 
 ## 4. Putting it all together
 
