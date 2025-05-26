@@ -6,7 +6,11 @@ title: "Introduction to R"
 
 ### Install R & RStudio
 
-### Install R packages
+On personal or unrestricted machines, install [R](https://cran.r-project.org/bin/windows/base/) and then [RStudio](https://posit.co/download/rstudio-desktop/) directly.
+
+On restricted/organisational machines (e.g. your University or workplace), install both R and RStudio (in that order) from your institutional software repository.
+
+Open RStudio, navigate to the top Tools menu > Install Packages, then enter `tidyverse,ratdat` and click install. It may take a minute or two to install, and you’ll see lots of text printed in the console. Once finished, you will see a blue ‘>’ symbol in the bottom left console pane.
 
 ## 1. R & RStudio
 
@@ -35,7 +39,7 @@ RStudio has 4 panes, clockwise from top left:
 
 It's best to keep related files and analyses together in project folders. You can then set up an RStudio project you're working on, which provides some useful features when working with R.
 
-<Portable project stuff>
+Portable project stuff
 
 ### Console vs Script
 
@@ -71,7 +75,7 @@ The `ratdat` package contains data from the [Portal Project](https://github.com/
 
 We will be using a dataset called `complete_old`.
 
-```{r data-help}
+```{r message=FALSE}
 ?complete_old
 ```
 
@@ -121,21 +125,21 @@ ggplot(data = complete_old, mapping = aes(x = weight, y = hindfoot_length, color
 
 Make a boxplot with `plot_type` on the x axis:
 
-```{r boxplot}
+```{r}
 ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length)) +
   geom_boxplot()
 ```
 
 Change the color of plots using `fill` and remove legend:
 
-```{r boxplot-fill, warning=FALSE}
+```{r warning=FALSE}
 ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
   geom_boxplot(show.legend = FALSE)
 ```
 
 Change theme by specifying a built-in theme called `theme_bw()`:
 
-```{r boxplot-fill, warning=FALSE}
+```{r warning=FALSE}
 ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
   geom_boxplot(show.legend = FALSE) +
   theme_bw()
@@ -143,7 +147,7 @@ ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fi
 
 Give the plot a title and change the x and y labels:
 
-```{r boxplot-fill, warning=FALSE}
+```{r warning=FALSE}
 ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
   geom_boxplot(show.legend = FALSE) +
   theme_bw() +
@@ -154,7 +158,7 @@ ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fi
 
 Centre the plot title:
 
-```{r boxplot-fill, warning=FALSE}
+```{r warning=FALSE}
 ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
   geom_boxplot(show.legend = FALSE) +
   theme_bw() +
@@ -166,7 +170,7 @@ ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fi
 
 Save the plot by assigning it to an object called `final_plot` and using `ggsave()`:
 
-```{r boxplot-fill, warning=FALSE}
+```{r warning=FALSE}
 final_plot <- ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
   geom_boxplot(show.legend = FALSE) +
   theme_bw() +
