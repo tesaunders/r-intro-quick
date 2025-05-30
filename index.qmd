@@ -1,6 +1,17 @@
 ---
 title: "Introduction to R"
+warning: false
+toc: true
 ---
+
+
+
+```{r}
+#| include: false
+
+options(max.print = 100)
+```
+
 
 ## Set up
 
@@ -185,6 +196,48 @@ ggsave(plot = final_plot, filename = "plots/rodent-size-plot-type.png",
 
 By default, ggplot dimensions are specified in inches, and images are 300 DPI. So this image will have a resolution of 2400 pixels wide by 1800 pixels high.
 
+:::::: {.callout-caution title="Exercise (5 min)"}
+Create a box plot using `complete_old` of plot_type vs weight with the following features:
+
+- Colour inside the box based on plot_type
+- Boxes are 50% transparent
+- Box outlines and outlier points are `grey75`
+- Set the theme to be black and white
+- Angle the x-axis text 45 degrees and hjust so the end of the label is inline with the tick
+- Give nice labels to the axes and a title
+
+```{r}
+#| eval: false
+
+ggplot(data = FIXME, mapping = aes(x = FIXME, 
+                                   y = FIXME, 
+                                   fill = FIXME)) + 
+  geom_boxplot(FIXME)+
+  theme_FIXME() +
+  theme(FIXME) +
+  labs(FIXME)
+
+```
+
+::: {.callout-note collapse="true" title="Example solution"}
+```{r}
+# create a plot
+ggplot(data = complete_old, mapping = aes(x = plot_type, 
+                                          y = weight, 
+                                          fill = plot_type)) + 
+  geom_boxplot(alpha = 0.5, 
+               colour = 'grey75')+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, 
+                                   hjust = 1)) +
+  labs(title = "Rodent Weight by Plot Type",
+       x = "Plot Type",
+       y = "Weight (g)")
+
+```
+:::
+::::::
+
 ## 3. Programming basics
 
 ### Vectors
@@ -215,9 +268,11 @@ str(complete_old)
 
 The `$` in front of each variable is an operator that allows us to select individual columns from a data.frame.
 
+
 ```{r dollar-subsetting}
 complete_old$year
 ```
+
 
 We get back all values in the `year` column.
 
