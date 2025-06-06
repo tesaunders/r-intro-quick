@@ -21,7 +21,7 @@ On personal or unrestricted machines, install [R](https://cran.r-project.org/bin
 
 On restricted/organisational machines (e.g. your University or workplace), install both R and RStudio (in that order) from your institutional software repository.
 
-Open RStudio, navigate to the top Tools menu > Install Packages, then enter `tidyverse,ratdat` and click install. It may take a minute or two to install, and you’ll see lots of text printed in the console. Once finished, you will see a blue ‘>’ symbol in the bottom left console pane.
+Open RStudio, navigate to the top Tools menu > Install Packages, then enter `tidyverse,ratdat,glue` and click install. It may take a minute or two to install, and you’ll see lots of text printed in the console. Once finished, you will see a blue ‘>’ symbol in the bottom left console pane.
 
 ## 1. R & RStudio
 
@@ -493,13 +493,118 @@ surveys %>%
   arrange(desc(mean_weight))
 ```
 
-## 4. Putting it all together
+## 4. The power of functions
 
-### Problem: Multiple separate plots
+### Problem: Creating multiple plots
 
-### Manually plotting each
+Let's say you need to create separate boxplots showing the variation in hindfoot length based on plot type, but for each species. One way to approach this problem would be to filter to a single species, and pipe the filtered data into a ggplot call. For exmaple, to do this for the rodent species marked "NL":
+
+```{r}
+complete_old %>%
+  filter(species_id == "NL" & !is.na(hindfoot_length)) %>%
+  ggplot(aes(x = plot_type, y = hindfoot_length)) +
+  geom_boxplot() +
+  theme_bw()
+```
+
+But repeating this chunk of code many times to produce plots for all species is inefficient, takes up a lot of room, and makes it hard to tweak aspects of the plots once you've written the code.
 
 ### Writing a function
+
+When working with programming languages, writing your own functions allows you automate sets of operations together in a much more efficient way.
+
+To write a function you need to first analyse your code to figure out what parts are constant and what parts vary. Let's look at the previous bit of code and replace the parts that could change with ___:
+
+```{r eval=FALSE}
+complete_old %>%
+  filter(species_id == "___" & !is.na(hindfoot_length)) %>%
+  ggplot(aes(x = plot_type, y = hindfoot_length)) +
+  geom_boxplot() +
+  theme_bw()
+```
+
+This bit of code requires a species ID code to create a plot based on that species, but the other parts remain constant.
+
+When writing a function, start with this basic template:
+
+```{r eval=FALSE}
+name <- function(arguments) {
+  body
+}
+```
+
+Let's call our example function plot_species, let's name our argument sp_id to refer to species_id, and let's replace the body with the appropriate code from above:
+
+```{r}
+plot_species <- function(sp_id) {
+  complete_old %>%
+    filter(species_id == sp_id & !is.na(hindfoot_length)) %>%
+    ggplot(aes(x = plot_type, y = hindfoot_length)) +
+    geom_boxplot() +
+    theme_bw()
+}
+```
+
+Lets try it out for a single species ID:
+
+```{r}
+plot_species("RM")
+```
+
+Now that we know it works, let's use it to create plots for all 36 species. We're going to use the `map()` function from the {purrr} package to do this. This function takes a list or vector (in our case unique values from the species_id column), and a function to apply to all values (in our case, the plot function we just created):
+
+```{r output=FALSE}
+map(unique(complete_old$species_id), plot_species)
+```
+
+Let's modify our function to give each plot a title to label which species_id is being plotted. To do this we're going to use a package called glue, so we'll need to load that too:
+
+```{r output=FALSE}
+library(glue)
+
+plot_species <- function(sp_id) {
+  complete_old %>%
+    filter(species_id == sp_id & !is.na(hindfoot_length)) %>%
+    ggplot(aes(x = plot_type, y = hindfoot_length)) +
+    geom_boxplot() +
+    theme_bw() +
+    labs(title = glue("Variation in hindfoot length based on plot type for {sp_id} species"))
+}
+
+map(unique(complete_old$species_id), plot_species)
+```
+
+We can stop R from creating plots for species which only contain `NA` values by filtering valid species_id codes. First filter all rows out if they contain an `NA` value for hindfoot_length, then use `pull()` to grab the remaining species_id codes, and use `unique()` to end up with a vector of the unique species_id codes that have hindfoot_length measurements:
+
+```{r}
+valid_species <- complete_old %>%
+  filter(!is.na(hindfoot_length)) |> 
+  pull(species_id) |> 
+  unique()
+```
+
+Now we can perform the map again on valid species_id codes:
+
+```{r output=FALSE}
+map(valid_species, plot_species)
+```
+
+Let's modify our function one more time to save each plot as a separate file with a filename based on the species code within the plot:
+
+```{r output=FALSE}
+plot_species <- function(sp_id) {
+  complete_old %>%
+    filter(species_id == sp_id & !is.na(hindfoot_length)) %>%
+    ggplot(aes(x = plot_type, y = hindfoot_length)) +
+    geom_boxplot() +
+    theme_bw() +
+    labs(title = glue("Variation in hindfoot length based on plot type for {sp_id} species"))
+  
+  ggsave(filename = glue("plots/hflength-box-{sp_id}.png"), plot = last_plot())
+}
+
+map(valid_species, plot_species)
+```
 
 ## Resources
 
