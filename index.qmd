@@ -493,6 +493,46 @@ surveys %>%
   arrange(desc(mean_weight))
 ```
 
+
+:::::: {.callout-caution title="Exercise (5 min)"}
+
+Using the `surveys` dataset:
+
+- remove `NA`'s from the `hindfoot_length`
+- remove rows missing `sex`
+- find the minimum, mean, and maximum `hindfoot_length`, and number of observations for each `species` 
+- order the results by the longest `hindfoot_length`
+
+
+```{r}
+#| eval: false
+
+FIXME %>% 
+  filter(FIXME) %>% 
+  group_by(FIXME) %>% 
+  summarise(FIXME) %>% 
+  FIXME(desc(FIXME))
+```
+
+::: {.callout-note collapse="true" title="Example solution"}
+```{r}
+
+surveys |>
+  filter(!is.na(hindfoot_length), !is.na(sex)) %>% 
+  group_by(species) %>% 
+  summarise(
+    n = n(), 
+    min_hindfoot_length = min(hindfoot_length),
+    mean_hindfoot_length = mean(hindfoot_length),
+    max_hindfoot_length = max(hindfoot_length)
+  ) %>% 
+  arrange(desc(max_hindfoot_length))
+
+```
+:::
+::::::
+
+
 ## 4. The power of functions
 
 ### Problem: Creating multiple plots
@@ -551,7 +591,7 @@ Lets try it out for a single species ID:
 plot_species("RM")
 ```
 
-Now that we know it works, let's use it to create plots for all 36 species. We're going to use the `map()` function from the {purrr} package to do this. This function takes a list or vector (in our case unique values from the species_id column), and a function to apply to all values (in our case, the plot function we just created):
+Now that we know it works, let's use it to create plots for all 36 species. We're going to use the `map()` function from the {purrr} package (included in {tidyverse} which we loaded earlier) to do this. This function takes a list or vector (in our case unique values from the species_id column), and a function to apply to all values (in our case, the plot function we just created):
 
 ```{r output=FALSE}
 map(unique(complete_old$species_id), plot_species)
@@ -578,8 +618,8 @@ We can stop R from creating plots for species which only contain `NA` values by 
 
 ```{r}
 valid_species <- complete_old %>%
-  filter(!is.na(hindfoot_length)) |> 
-  pull(species_id) |> 
+  filter(!is.na(hindfoot_length)) %>%  
+  pull(species_id) %>%  
   unique()
 ```
 
