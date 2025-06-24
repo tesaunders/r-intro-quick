@@ -23,6 +23,11 @@ On restricted/organisational machines (e.g. your University or workplace), insta
 
 Open RStudio, navigate to the top Tools menu > Install Packages, then enter `tidyverse,ratdat,glue` and click install. It may take a minute or two to install, and you’ll see lots of text printed in the console. Once finished, you will see a blue ‘>’ symbol in the bottom left console pane.
 
+### Download the lesson R project
+
+1. Download and save this lesson repository from GitHub [https://github.com/tesaunders/r-intro-quick/archive/refs/heads/main.zip](https://github.com/tesaunders/r-intro-quick/archive/refs/heads/main.zip) to your Desktop.
+2. Extract the zip file and open the file `r-intro-quick.Rproj`
+
 ## 1. R & RStudio
 
 ### Programming vs point-and-click
@@ -517,7 +522,7 @@ FIXME %>%
 ::: {.callout-note collapse="true" title="Example solution"}
 ```{r}
 
-surveys |>
+surveys %>% 
   filter(!is.na(hindfoot_length), !is.na(sex)) %>% 
   group_by(species) %>% 
   summarise(
@@ -573,7 +578,7 @@ name <- function(arguments) {
 }
 ```
 
-Let's call our example function plot_species, let's name our argument sp_id to refer to species_id, and let's replace the body with the appropriate code from above:
+Let's call our example function plot_species, let's name our argument `sp_id` to refer to `species_id`, and let's replace the body with the appropriate code from above:
 
 ```{r}
 plot_species <- function(sp_id) {
@@ -614,7 +619,7 @@ plot_species <- function(sp_id) {
 map(unique(complete_old$species_id), plot_species)
 ```
 
-We can stop R from creating plots for species which only contain `NA` values by filtering valid species_id codes. First filter all rows out if they contain an `NA` value for hindfoot_length, then use `pull()` to grab the remaining species_id codes, and use `unique()` to end up with a vector of the unique species_id codes that have hindfoot_length measurements:
+We can stop R from creating plots for species which only contain `NA` values by filtering valid species_id codes. First filter all rows out if they contain an `NA` value for `hindfoot_length`, then use `pull()` to grab the remaining species_id codes, and use `unique()` to end up with a vector of the unique species_id codes that have hindfoot_length measurements:
 
 ```{r}
 valid_species <- complete_old %>%
@@ -632,7 +637,7 @@ map(valid_species, plot_species)
 Let's modify our function one more time to save each plot as a separate file with a filename based on the species code within the plot:
 
 ```{r output=FALSE}
-plot_species <- function(sp_id) {
+plot_species <- function(sp_id, plot_path) {
   complete_old %>%
     filter(species_id == sp_id & !is.na(hindfoot_length)) %>%
     ggplot(aes(x = plot_type, y = hindfoot_length)) +
@@ -640,10 +645,10 @@ plot_species <- function(sp_id) {
     theme_bw() +
     labs(title = glue("Variation in hindfoot length based on plot type for {sp_id} species"))
   
-  ggsave(filename = glue("plots/hflength-box-{sp_id}.png"), plot = last_plot())
+  ggsave(filename = glue("{plot_path}/hflength-box-{sp_id}.png"), plot = last_plot())
 }
 
-map(valid_species, plot_species)
+map(valid_species, plot_species, plot_path = "plots/")
 ```
 
 ## Resources
