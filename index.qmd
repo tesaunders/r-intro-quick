@@ -23,6 +23,11 @@ On restricted/organisational machines (e.g. your University or workplace), insta
 
 Open RStudio, navigate to the top Tools menu > Install Packages, then enter `tidyverse,ratdat,glue` and click install. It may take a minute or two to install, and you’ll see lots of text printed in the console. Once finished, you will see a blue ‘>’ symbol in the bottom left console pane.
 
+### Download the lesson R project
+
+1. Download and save this lesson repository from GitHub [https://github.com/tesaunders/r-intro-quick/archive/refs/heads/main.zip](https://github.com/tesaunders/r-intro-quick/archive/refs/heads/main.zip) to your Desktop.
+2. Extract the zip file and open the file `r-intro-quick.Rproj`
+
 ## 1. R & RStudio
 
 ### Programming vs point-and-click
@@ -632,7 +637,7 @@ map(valid_species, plot_species)
 Let's modify our function one more time to save each plot as a separate file with a filename based on the species code within the plot:
 
 ```{r output=FALSE}
-plot_species <- function(sp_id, path) {
+plot_species <- function(sp_id, plot_path) {
   complete_old %>%
     filter(species_id == sp_id & !is.na(hindfoot_length)) %>%
     ggplot(aes(x = plot_type, y = hindfoot_length)) +
@@ -640,10 +645,10 @@ plot_species <- function(sp_id, path) {
     theme_bw() +
     labs(title = glue("Variation in hindfoot length based on plot type for {sp_id} species"))
   
-  ggsave(filename = glue("{path}/hflength-box-{sp_id}.png", path), plot = last_plot())
+  ggsave(filename = glue("{plot_path}/hflength-box-{sp_id}.png"), plot = last_plot())
 }
 
-map(valid_species, plot_species, path = "plots/")
+map(valid_species, plot_species, plot_path = "plots/")
 ```
 
 ## Resources
