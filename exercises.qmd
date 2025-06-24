@@ -1,0 +1,66 @@
+---
+title: "Exercises"
+editor: visual
+---
+
+**Instructions**
+As you complete the exercises keep your cursor in the exercise code chunk and ensure to run all chunks above the exercise chunk (PC: ctrl + alt + shift + P or Mac: cmd + alt + shift + P) followed by the current code chunk you are on (PC: ctrl + shift + enter, or Mac: cmd + shift + return), or _render_ the whole document (PC: ctrl + shift + K, or Mac: cmd + shift + K).
+
+## Exercise 1
+
+Create a box plot using `complete_old` of plot_type vs weight with the following features:
+
+- Colour inside the box based on plot_type
+- Boxes are 50% transparent
+- Box outlines and outlier points are `grey75`
+- Set the theme to be black and white
+- Angle the x-axis text 45 degrees and hjust so the end of the label is inline with the tick
+- Give nice labels to the axes and a title
+
+Fix the FIXMEs and then switch the top line of the code block to `#| eval: true`. After which execute the code block (PC: ctrl + shift + enter, or Mac: cmd + shift + return)
+
+```{r}
+#| eval: false
+
+library(ggplot2)
+library(ratdat)
+
+ggplot(data = FIXME, mapping = aes(x = FIXME, 
+                                   y = FIXME, 
+                                   fill = FIXME)) + 
+  geom_boxplot(FIXME)+
+  theme_FIXME() +
+  theme(FIXME) +
+  labs(FIXME)
+```
+
+
+## Exercise 2
+
+
+
+Using the `surveys` dataset:
+
+- remove `NA`'s from the `hindfoot_length`
+- remove rows missing `sex`
+- find the minimum, mean, and maximum `hindfoot_length`, and number of observations for each `species` 
+- order the results by the longest `hindfoot_length`
+
+
+Fix the FIXMEs and then switch the top line of the code block to `#| eval: true`. After which execute the code block (PC: ctrl + shift + enter, or Mac: cmd + shift + return)
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+surveys <- read_csv("data/surveys_complete_77_89.csv")
+
+
+FIXME %>% 
+  filter(FIXME) %>% 
+  group_by(FIXME) %>% 
+  summarise(FIXME) %>% 
+  FIXME(desc(FIXME))
+```
+
+
