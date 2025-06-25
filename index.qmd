@@ -160,6 +160,14 @@ ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fi
   geom_boxplot(show.legend = FALSE) +
   theme_bw()
 ```
+Change the colour scheme to use specific colours. You need to specify as many colours as there are groups. There are a range of `scale_` functions, and you need to match based on the aesthetic that has been mapped, eg `scale_fill_` relates to the fill scales, whereas `scale_color_` relates to the colour scales in `aes()`.
+
+```{r}
+ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fill = plot_type)) +
+  geom_boxplot(show.legend = FALSE) +
+  theme_bw() +
+  scale_fill_manual(values = c("darkgreen", "skyblue", "pink", "grey", "purple"))
+```
 
 Give the plot a title and change the x and y labels:
 
@@ -183,6 +191,7 @@ ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length, fi
        x = "Plot Type",
        y = "Hindfoot Length (mm)")
 ```
+
 
 Save the plot by assigning it to an object called `final_plot` and using `ggsave()`:
 
